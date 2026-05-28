@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ROGUES } from "../data/rogues";
+import { useRogues } from "../lib/hooks";
+import { HudLoader, HudError } from "./DataState";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function RoguesGallery() {
+  const { data: rogues = [], isLoading, isError, refetch } = useRogues();
   const [index, setIndex] = useState(0);
-  const active = ROGUES[index];
+  const safeIndex = rogues.length ? Math.min(index, rogues.length - 1) : 0;
+  const active = rogues[safeIndex];
 
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
@@ -17,7 +20,7 @@ export default function RoguesGallery() {
   const featureImgRef = useRef(null);
   const dossierRef = useRef(null);
 
-  const go = (i) => setIndex((i + ROGUES.length) % ROGUES.length);
+  const go = (i) => rogues.length && setIndex((i + rogues.length) % rogues.length);
 
   // ENTRANCE — chips animate transform-only (never opacity) so none can get
   // stuck invisible if a ScrollTrigger mis-evaluates during image load.
@@ -42,17 +45,17 @@ export default function RoguesGallery() {
 
   // Keep the active chip scrolled into view inside the horizontal rail.
   useEffect(() => {
-    const el = chipRefs.current[index];
+    const el = chipRefs.current[safeIndex];
     const rail = railRef.current;
     if (!el || !rail) return;
     const left = el.offsetLeft - rail.clientWidth / 2 + el.clientWidth / 2;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     rail.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
-  }, [index]);
+  }, [safeIndex]);
 
   // ACTIVE CHANGE — ambient shift + crossfade feature + slide dossier
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!active || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
       gsap.to(ambientRef.current, {
         background: `radial-gradient(ellipse at 30% 25%, ${active.accentSoft}, transparent 60%)`,
@@ -62,7 +65,22 @@ export default function RoguesGallery() {
       gsap.fromTo(dossierRef.current, { opacity: 0, x: 22 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" });
     }, sectionRef);
     return () => ctx.revert();
-  }, [index]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [active?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (isError && !rogues.length) {
+    return (
+      <section id="rogues" className="relative w-full bg-gotham-void py-28">
+        <div className="mx-auto max-w-7xl px-6"><HudError onRetry={refetch} /></div>
+      </section>
+    );
+  }
+  if (isLoading && !rogues.length) {
+    return (
+      <section id="rogues" className="relative w-full bg-gotham-void py-28">
+        <div className="mx-auto max-w-7xl px-6"><HudLoader label="DECRYPTING ROGUE INDEX" /></div>
+      </section>
+    );
+  }
 
   return (
     <section id="rogues" ref={sectionRef} className="relative w-full overflow-hidden bg-gotham-void py-28">
@@ -82,7 +100,7 @@ export default function RoguesGallery() {
             </h2>
           </div>
           <p className="max-w-sm font-mono text-[11px] leading-relaxed tracking-[0.12em] text-white/55">
-            {ROGUES.length} active hostiles flagged by the Batcomputer. Select a
+            {rogues.length} active hostiles flagged by the Batcomputer. Select a
             target below to open its live dossier.
           </p>
         </div>
@@ -92,18 +110,18 @@ export default function RoguesGallery() {
           <span>SELECT TARGET</span>
           <div className="flex items-center gap-3">
             <span style={{ color: active.accent }}>
-              {String(index + 1).padStart(2, "0")} / {String(ROGUES.length).padStart(2, "0")}
+              {String(safeIndex + 1).padStart(2, "0")} / {String(rogues.length).padStart(2, "0")}
             </span>
             <div className="flex gap-1.5">
-              <button onClick={() => go(index - 1)} aria-label="Previous target" className="grid h-7 w-7 cursor-pointer place-items-center border border-white/15 text-white/70 transition-colors duration-200 hover:border-bat-neon/60 hover:text-bat-neon">‹</button>
-              <button onClick={() => go(index + 1)} aria-label="Next target" className="grid h-7 w-7 cursor-pointer place-items-center border border-white/15 text-white/70 transition-colors duration-200 hover:border-bat-neon/60 hover:text-bat-neon">›</button>
+              <button onClick={() => go(safeIndex - 1)} aria-label="Previous target" className="grid h-7 w-7 cursor-pointer place-items-center border border-white/15 text-white/70 transition-colors duration-200 hover:border-bat-neon/60 hover:text-bat-neon">‹</button>
+              <button onClick={() => go(safeIndex + 1)} aria-label="Next target" className="grid h-7 w-7 cursor-pointer place-items-center border border-white/15 text-white/70 transition-colors duration-200 hover:border-bat-neon/60 hover:text-bat-neon">›</button>
             </div>
           </div>
         </div>
 
         <div ref={railRef} className="rail-scroll mb-6 flex snap-x gap-2.5 overflow-x-auto pb-3">
-          {ROGUES.map((r, i) => {
-            const isActive = i === index;
+          {rogues.map((r, i) => {
+            const isActive = i === safeIndex;
             return (
               <button
                 key={r.id}

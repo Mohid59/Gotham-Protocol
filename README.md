@@ -39,6 +39,8 @@ A dark, immersive web experience styled as the classified Wayne Enterprises arch
 - **[GSAP](https://gsap.com)** (+ ScrollTrigger) — scroll & entrance animations
 - **[Framer Motion](https://www.framer.com/motion/)** — page transitions
 - **[Lenis](https://lenis.darkroom.engineering/)** — smooth scrolling
+- **[Supabase](https://supabase.com)** (Postgres) — content + contact-form backend
+- **[TanStack Query](https://tanstack.com/query)** — data fetching, caching & loading states
 
 ## 🚀 Getting Started
 
@@ -64,12 +66,16 @@ npm run preview
 ```
 src/
 ├── pages/          # routed pages (Home, Dossier, Rogues, Allies, Armory, Contact)
-├── components/     # Navbar, Footer, HUDOverlay, BootSequence, PageShell, etc.
-├── data/           # content: rogues.js, allies.js, suits.js, vehicles.js, gadgets.js
+├── components/     # Navbar, Footer, HUDOverlay, BootSequence, PageShell, DataState, etc.
+├── data/           # content + DB seed source: rogues, allies, suits, vehicles, gadgets
+├── lib/            # supabase client, data API (+ local fallback), query hooks, image map
 ├── assets/         # optimized WebP imagery
 ├── App.jsx         # layout shell: routing, transitions, smooth scroll, boot
-├── main.jsx        # entry + router
+├── main.jsx        # entry + router + React Query provider
 └── index.css       # Tailwind + HUD utility classes
+
+supabase/schema.sql # tables + Row Level Security
+scripts/seed.mjs    # seed the DB from src/data
 ```
 
 ## 🎨 Customization
@@ -77,6 +83,25 @@ src/
 All content lives in `src/data/` — edit those files to change characters, suits, vehicles, gadgets, bios, stats, and accent colors.
 
 To swap imagery, drop a new file into `src/assets/` and update the matching `import` in the relevant data file (e.g. `rogues.js`). Each entry supports an `objectPos` field (CSS `object-position`) to frame the subject. Source images are stored as optimized WebP; re-export large art as WebP (~1200 px longest side) to keep load times fast.
+
+## 🗄️ Backend (Supabase)
+
+Content (rogues, allies, suits, vehicles, gadgets) and the contact form are
+backed by **Supabase** — with a graceful fallback to bundled local content, so
+the app runs perfectly even with no backend configured.
+
+**Setup (optional — the app works without it):**
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. Run [`supabase/schema.sql`](supabase/schema.sql) in the SQL Editor (creates tables + Row Level Security).
+3. Copy `.env.example` → `.env` and fill in your keys (Settings → API).
+4. Seed the database from the local content:
+   ```bash
+   npm run seed
+   ```
+5. `npm run dev` — the site now reads from Supabase (with HUD "decrypting" loading states); the contact form writes to the `transmissions` table.
+
+**How it works:** [`src/lib/api.js`](src/lib/api.js) fetches each collection from Supabase when `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` are present, and falls back to [`src/data/`](src/data/) otherwise. Data is fetched via **TanStack Query**; images stay as optimized local assets attached by id. RLS makes content world-readable while keeping submitted transmissions private (insert-only).
 
 ## 🌐 Deployment
 

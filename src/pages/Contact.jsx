@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import PageShell from "../components/PageShell";
+import { submitTransmission } from "../lib/api";
 import batLogo from "../assets/bat-logo.webp";
 
 const CHANNELS = [
@@ -13,7 +14,7 @@ const CHANNELS = [
 export default function Contact() {
   const ref = useRef(null);
   const discRef = useRef(null);
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -24,10 +25,24 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3200);
+    const form = e.target;
+    const fd = new FormData(form);
+    setStatus("sending");
+    try {
+      await submitTransmission({
+        codename: fd.get("codename")?.toString().trim(),
+        channel: fd.get("freq")?.toString().trim(),
+        message: fd.get("msg")?.toString().trim(),
+      });
+      setStatus("sent");
+      form.reset();
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
 
   return (
@@ -72,26 +87,34 @@ export default function Contact() {
 
           <form onSubmit={submit} className="mt-6 space-y-5">
             <Field id="codename" label="CODENAME">
-              <input id="codename" required type="text" placeholder="Identify yourself" className="hud-input" />
+              <input id="codename" name="codename" required type="text" placeholder="Identify yourself" className="hud-input" />
             </Field>
             <Field id="freq" label="RETURN FREQUENCY">
-              <input id="freq" required type="email" placeholder="your@channel.com" className="hud-input" />
+              <input id="freq" name="freq" required type="email" placeholder="your@channel.com" className="hud-input" />
             </Field>
             <Field id="msg" label="MESSAGE">
-              <textarea id="msg" required rows={4} placeholder="State the nature of the emergency..." className="hud-input resize-none" />
+              <textarea id="msg" name="msg" required rows={4} placeholder="State the nature of the emergency..." className="hud-input resize-none" />
             </Field>
 
             <button
               type="submit"
-              className="group inline-flex w-full cursor-pointer items-center justify-center gap-4 border border-bat-neon/60 bg-bat-neon/5 px-8 py-4 font-mono text-[12px] tracking-[0.4em] text-bat-neon transition-all duration-200 hover:bg-bat-neon/15 hover:shadow-neon-blue"
+              disabled={status === "sending"}
+              className="group inline-flex w-full cursor-pointer items-center justify-center gap-4 border border-bat-neon/60 bg-bat-neon/5 px-8 py-4 font-mono text-[12px] tracking-[0.4em] text-bat-neon transition-all duration-200 hover:bg-bat-neon/15 hover:shadow-neon-blue disabled:cursor-wait disabled:opacity-60"
             >
-              <span className="h-2 w-2 rounded-full bg-bat-neon transition-transform duration-200 group-hover:scale-150" />
-              <span>{sent ? "SIGNAL TRANSMITTED" : "DEPLOY BEACON"}</span>
-              {!sent && <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>}
+              <span className={`h-2 w-2 rounded-full bg-bat-neon transition-transform duration-200 ${status === "sending" ? "animate-ping" : "group-hover:scale-150"}`} />
+              <span>
+                {status === "sending" ? "TRANSMITTING…" : status === "sent" ? "SIGNAL TRANSMITTED" : status === "error" ? "TRANSMISSION FAILED" : "DEPLOY BEACON"}
+              </span>
+              {status === "idle" && <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>}
             </button>
-            {sent && (
+            {status === "sent" && (
               <p className="font-mono text-[10px] tracking-[0.25em] text-bat-toxic">
                 ● UPLINK RECEIVED — STAND BY FOR CONTACT
+              </p>
+            )}
+            {status === "error" && (
+              <p className="font-mono text-[10px] tracking-[0.25em] text-bat-crimson">
+                ● CHANNEL DISRUPTED — RETRY TRANSMISSION
               </p>
             )}
           </form>

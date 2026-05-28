@@ -1,8 +1,4 @@
-// Armory — Batman's signature vehicles.
-import batmobileImg from "../assets/veh-batmobile.webp";
-import batwingImg from "../assets/veh-batwing.webp";
-import batpodImg from "../assets/veh-batpod.webp";
-
+// Armory — vehicles content (fallback + DB seed source). Images by id in api.js.
 export const VEHICLES = [
   {
     id: "batmobile",
@@ -26,7 +22,6 @@ export const VEHICLES = [
       "Caltrop & smoke dispensers",
       "Intimidation mode / cockpit eject",
     ],
-    image: batmobileImg,
     objectPos: "center 45%",
   },
   {
@@ -51,7 +46,6 @@ export const VEHICLES = [
       "Countermeasure flare bank",
       "Drop-deploy Batmobile cradle",
     ],
-    image: batwingImg,
     objectPos: "center 40%",
   },
   {
@@ -76,7 +70,6 @@ export const VEHICLES = [
       "180-degree pivot turn",
       "Wall-climb tire articulation",
     ],
-    image: batpodImg,
     objectPos: "center 55%",
   },
 ];

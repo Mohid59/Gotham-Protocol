@@ -28,6 +28,10 @@ jobs:
         run: npm run build
         env:
           GH_PAGES: "true"
+          # Optional: add these as repo secrets to enable the live database on
+          # the deployed site. Absent → the site uses bundled local content.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - name: SPA fallback (deep links serve index.html)
         run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3

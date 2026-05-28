@@ -3,11 +3,13 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PageShell from "../components/PageShell";
 import BatSymbol from "../components/BatSymbol";
-import { ALLIES } from "../data/allies";
+import { useAllies } from "../lib/hooks";
+import { HudLoader, HudError } from "../components/DataState";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Allies() {
+  const { data: allies = [], isLoading, isError, refetch } = useAllies();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -19,21 +21,27 @@ export default function Allies() {
       });
     }, ref);
     return () => ctx.revert();
-  }, []);
+  }, [allies.length]);
 
   return (
     <PageShell
       kicker="SECTION_02B // ALLIED ASSETS"
       title={<>THE <span className="text-bat-neon">BAT-FAMILY</span></>}
-      intro="Batman works alone — except when he doesn't. A vetted network of operatives, each trained in the cave and trusted with the mission. Six active allies on the board."
+      intro="Batman works alone — except when he doesn't. A vetted network of operatives, each trained in the cave and trusted with the mission."
       wide
     >
       <div ref={ref}>
-        <div className="ally-grid grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {ALLIES.map((a) => (
-            <AllyCard key={a.id} ally={a} />
-          ))}
-        </div>
+        {isError && !allies.length ? (
+          <HudError onRetry={refetch} />
+        ) : isLoading && !allies.length ? (
+          <HudLoader label="LOADING ALLIED ASSETS" />
+        ) : (
+          <div className="ally-grid grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {allies.map((a) => (
+              <AllyCard key={a.id} ally={a} />
+            ))}
+          </div>
+        )}
       </div>
     </PageShell>
   );

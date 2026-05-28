@@ -186,6 +186,12 @@ body {
   backface-visibility: hidden;
 }
 
+/* Indeterminate horizontal loader sweep */
+@keyframes scanx {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(340%); }
+}
+
 /* HUD FORM INPUTS */
 .hud-input {
   width: 100%;

@@ -7,8 +7,8 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
-    // Node-context config files (Vite/ESLint) — allow Node globals like `process`.
-    files: ['vite.config.js', 'eslint.config.js'],
+    // Node-context files (config + scripts) — allow Node globals like `process`.
+    files: ['vite.config.js', 'eslint.config.js', 'scripts/**/*.{js,mjs}'],
     languageOptions: { globals: globals.node },
   },
   {

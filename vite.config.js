@@ -17,6 +17,7 @@ export default defineConfig({
           if (id.includes('node_modules/gsap')) return 'gsap'
           if (id.includes('node_modules/framer-motion') || id.includes('node_modules/motion')) return 'motion'
           if (id.includes('node_modules/react-router')) return 'router'
+          if (id.includes('node_modules/@supabase') || id.includes('node_modules/@tanstack')) return 'data'
         },
       },
     },

@@ -1,8 +1,4 @@
-// Armory — the three most iconic Batsuits.
-import classicImg from "../assets/suit-classic.webp";
-import darkKnightImg from "../assets/suit-dark-knight.webp";
-import theBatmanImg from "../assets/suit-the-batman.webp";
-
+// Armory — Batsuits content (fallback + DB seed source). Images by id in api.js.
 export const SUITS = [
   {
     id: "classic",
@@ -25,7 +21,6 @@ export const SUITS = [
       "Fluted gauntlets",
       "Reinforced cowl lenses",
     ],
-    image: classicImg,
     objectPos: "center 18%",
   },
   {
@@ -49,7 +44,6 @@ export const SUITS = [
       "Magnetized scallop blades",
       "Reinforced graphite cowl",
     ],
-    image: darkKnightImg,
     objectPos: "center 35%",
   },
   {
@@ -73,7 +67,6 @@ export const SUITS = [
       "Improvised knuckle plating",
       "Adrenaline compound injector",
     ],
-    image: theBatmanImg,
     objectPos: "center 20%",
   },
 ];

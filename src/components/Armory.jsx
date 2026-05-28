@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SUITS } from "../data/suits";
-import { VEHICLES } from "../data/vehicles";
-import { GADGETS } from "../data/gadgets";
+import { useSuits, useVehicles, useGadgets } from "../lib/hooks";
+import { HudLoader, HudError } from "./DataState";
 import BatSymbol from "./BatSymbol";
 import { BlueprintScan, VehicleArt, GadgetIcon } from "./ArmoryArt";
 
@@ -27,6 +26,12 @@ export default function Armory() {
   const headerRef = useRef(null);
   const [open, setOpen] = useState(null);
 
+  const { data: suits = [], isLoading: sL, isError: sE, refetch: sR } = useSuits();
+  const { data: vehicles = [], isLoading: vL } = useVehicles();
+  const { data: gadgets = [], isLoading: gL } = useGadgets();
+  const ready = suits.length || vehicles.length || gadgets.length;
+  const loading = (sL || vL || gL) && !ready;
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(headerRef.current?.children || [], {
@@ -41,7 +46,7 @@ export default function Armory() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [ready]);
 
   return (
     <section id="armory" ref={sectionRef} className="relative w-full overflow-hidden bg-gotham-ink py-28">
@@ -70,29 +75,37 @@ export default function Armory() {
           </div>
         </div>
 
-        {/* SUITS */}
-        <SubHeader index="01" label="COMBAT SUITS" accent="#00e5ff" count={SUITS.length} />
-        <div data-reveal className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {SUITS.map((s) => (
-            <AssetTile key={s.id} item={s} onOpen={() => setOpen(s)} />
-          ))}
-        </div>
+        {sE && !ready ? (
+          <HudError onRetry={sR} />
+        ) : loading ? (
+          <HudLoader label="ACCESSING ARMORY VAULT" />
+        ) : (
+          <>
+            {/* SUITS */}
+            <SubHeader index="01" label="COMBAT SUITS" accent="#00e5ff" count={suits.length} />
+            <div data-reveal className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+              {suits.map((s) => (
+                <AssetTile key={s.id} item={s} onOpen={() => setOpen(s)} />
+              ))}
+            </div>
 
-        {/* VEHICLES */}
-        <SubHeader index="02" label="VEHICLES" accent="#9dff00" count={VEHICLES.length} />
-        <div data-reveal className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {VEHICLES.map((v) => (
-            <AssetTile key={v.id} item={v} onOpen={() => setOpen(v)} />
-          ))}
-        </div>
+            {/* VEHICLES */}
+            <SubHeader index="02" label="VEHICLES" accent="#9dff00" count={vehicles.length} />
+            <div data-reveal className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+              {vehicles.map((v) => (
+                <AssetTile key={v.id} item={v} onOpen={() => setOpen(v)} />
+              ))}
+            </div>
 
-        {/* GADGETS */}
-        <SubHeader index="03" label="UTILITY-BELT GADGETS" accent="#ff8c1a" count={GADGETS.length} />
-        <div data-reveal className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {GADGETS.map((g) => (
-            <GadgetCard key={g.id} gadget={g} />
-          ))}
-        </div>
+            {/* GADGETS */}
+            <SubHeader index="03" label="UTILITY-BELT GADGETS" accent="#ff8c1a" count={gadgets.length} />
+            <div data-reveal className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              {gadgets.map((g) => (
+                <GadgetCard key={g.id} gadget={g} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <ItemModal item={open} onClose={() => setOpen(null)} />

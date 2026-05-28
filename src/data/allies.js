@@ -1,11 +1,5 @@
-// The Bat-Family roster.
-import nightwingImg from "../assets/nightwing.webp";
-import oracleImg from "../assets/oracle.webp";
-import robinImg from "../assets/robin.webp";
-import redRobinImg from "../assets/red-robin.webp";
-import batgirlImg from "../assets/batgirl.webp";
-import alfredImg from "../assets/alfred.webp";
-
+// Bat-Family roster content (fallback + DB seed source).
+// Images attached by id in src/lib/api.js.
 export const ALLIES = [
   {
     id: "nightwing",
@@ -16,7 +10,6 @@ export const ALLIES = [
     status: "ACTIVE",
     color: "#00e5ff",
     bio: "The first Robin, now Gotham's most agile guardian. Leads the family when the Bat goes dark — acrobat, detective, and natural commander.",
-    image: nightwingImg,
     objectPos: "center 20%",
   },
   {
@@ -28,7 +21,6 @@ export const ALLIES = [
     status: "ONLINE",
     color: "#9dff00",
     bio: "Eyes on every camera in Gotham. The information backbone of every operation — no door stays locked, no signal stays hidden.",
-    image: oracleImg,
     objectPos: "center 28%",
   },
   {
@@ -40,7 +32,6 @@ export const ALLIES = [
     status: "FIELD",
     color: "#ff2a3d",
     bio: "Born of the League of Assassins, son of the Bat. Lethal, brilliant, and slowly learning that restraint is its own kind of strength.",
-    image: robinImg,
     objectPos: "center 22%",
   },
   {
@@ -52,7 +43,6 @@ export const ALLIES = [
     status: "ACTIVE",
     color: "#ff8c1a",
     bio: "The detective who deduced Batman's identity as a child. Always ten moves ahead — the family's sharpest tactical mind.",
-    image: redRobinImg,
     objectPos: "center 18%",
   },
   {
@@ -64,7 +54,6 @@ export const ALLIES = [
     status: "ACTIVE",
     color: "#b388ff",
     bio: "Raised to read bodies instead of words. The most gifted hand-to-hand combatant in the family — she sees a strike before it's thrown.",
-    image: batgirlImg,
     objectPos: "center 25%",
   },
   {
@@ -76,7 +65,6 @@ export const ALLIES = [
     status: "STANDING BY",
     color: "#cfd2da",
     bio: "Butler, field medic, and conscience. The steady hand that holds the entire mission together — and the only one who can send the Bat to bed.",
-    image: alfredImg,
     objectPos: "center 18%",
   },
 ];
