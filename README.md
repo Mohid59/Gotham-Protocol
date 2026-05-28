@@ -1,16 +1,98 @@
-# React + Vite
+# 🦇 Gotham Protocol
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Batcomputer OS v7.42** — a cinematic, multi-page Batman showcase built as a tactical HUD interface.
 
-Currently, two official plugins are available:
+A dark, immersive web experience styled as the classified Wayne Enterprises archive: a "system booting" intro, a parallax hero, an interactive 13-villain rogues gallery, the Bat-Family roster, an armory of suits, vehicles & gadgets, and a contact "signal." Built with React, GSAP, and Framer Motion.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Live demo:** https://mohid59.github.io/Gotham-Protocol/ &nbsp;·&nbsp; _(activates once GitHub Pages is enabled — see [Deployment](#-deployment))_
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Cinematic boot sequence** — a one-time "mainframe sync" intro on first load.
+- **Persistent Batcomputer HUD** — corner brackets, scanlines, a live signal ticker, and a tactical top nav.
+- **Parallax hero** — full-bleed Batman art with cursor-tracking depth and a sequenced GSAP reveal.
+- **Rogues Gallery** — 13 villains in a horizontal selector rail that auto-centers the active target, each with a live dossier (bio, stats, threat score) and an ambient glow that shifts to the villain's accent color.
+- **The Bat-Family** — an allied-assets roster with status badges.
+- **The Armory** — combat suits, vehicles, and utility-belt gadgets, with detail modals.
+- **Classified Files** — an animated accordion of "declassified" intel on the Dossier page.
+- **Smooth scrolling** (Lenis) wired into the GSAP ticker, with **Framer Motion** page transitions.
+- **Production-ready** — WebP-optimized imagery, vendor code-splitting, SPA routing fallbacks, social meta tags, full mobile responsiveness, and `prefers-reduced-motion` support.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🗺️ Pages
+
+| Route | Page | Description |
+|-------|------|-------------|
+| `/` | **Home** | Hero, capability bento grid, and quick-access cards |
+| `/dossier` | **Dossier** | Subject file: bio, identity matrix, training, operations history, declassified files |
+| `/rogues` | **Rogues** | Interactive 13-villain threat gallery |
+| `/allies` | **Allies** | The Bat-Family roster |
+| `/armory` | **Armory** | Suits, vehicles & gadgets with spec modals |
+| `/contact` | **Contact** | Bat-Signal channel + transmission form |
+
+## 🛠️ Tech Stack
+
+- **[React 19](https://react.dev)** + **[Vite](https://vite.dev)**
+- **[React Router](https://reactrouter.com)** — multi-page routing
+- **[Tailwind CSS](https://tailwindcss.com)** — styling & design tokens
+- **[GSAP](https://gsap.com)** (+ ScrollTrigger) — scroll & entrance animations
+- **[Framer Motion](https://www.framer.com/motion/)** — page transitions
+- **[Lenis](https://lenis.darkroom.engineering/)** — smooth scrolling
+
+## 🚀 Getting Started
+
+```bash
+# install dependencies
+npm install
+
+# start the dev server (http://localhost:5173)
+npm run dev
+
+# type-check lint
+npm run lint
+
+# production build → dist/
+npm run build
+
+# preview the production build locally
+npm run preview
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── pages/          # routed pages (Home, Dossier, Rogues, Allies, Armory, Contact)
+├── components/     # Navbar, Footer, HUDOverlay, BootSequence, PageShell, etc.
+├── data/           # content: rogues.js, allies.js, suits.js, vehicles.js, gadgets.js
+├── assets/         # optimized WebP imagery
+├── App.jsx         # layout shell: routing, transitions, smooth scroll, boot
+├── main.jsx        # entry + router
+└── index.css       # Tailwind + HUD utility classes
+```
+
+## 🎨 Customization
+
+All content lives in `src/data/` — edit those files to change characters, suits, vehicles, gadgets, bios, stats, and accent colors.
+
+To swap imagery, drop a new file into `src/assets/` and update the matching `import` in the relevant data file (e.g. `rogues.js`). Each entry supports an `objectPos` field (CSS `object-position`) to frame the subject. Source images are stored as optimized WebP; re-export large art as WebP (~1200 px longest side) to keep load times fast.
+
+## 🌐 Deployment
+
+The repo ships with a **GitHub Actions → Pages** workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
+
+**GitHub Pages**
+1. Repo → **Settings → Pages → Source: "GitHub Actions"**.
+2. Push to `main` — the workflow builds with the correct base path (`/Gotham-Protocol/`) and deploys automatically.
+
+**Vercel / Netlify** (root domain, no base path)
+- Import the repo; Vite is auto-detected. SPA deep-link routing is handled by [`vercel.json`](vercel.json) and [`public/_redirects`](public/_redirects).
+
+## ⚖️ Disclaimer
+
+A non-commercial fan project built for educational and portfolio purposes. **Batman** and all related characters, names, and imagery are trademarks of and © **DC Comics / Warner Bros.** All rights belong to their respective owners.
+
+---
+
+<p align="center"><em>"It's not who I am underneath, but what I do that defines me."</em></p>
