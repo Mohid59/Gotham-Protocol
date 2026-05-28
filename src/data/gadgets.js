@@ -1,0 +1,51 @@
+// Armory — utility-belt gadgets. Compact spec cards (icon + readout).
+export const GADGETS = [
+  {
+    id: "batarang",
+    name: "BATARANG",
+    icon: "batarang",
+    color: "#00e5ff",
+    spec: "Bat-edged throwing blade",
+    detail: "Aerodynamic steel projectile; ricochet and remote-return variants.",
+  },
+  {
+    id: "grapnel",
+    name: "GRAPNEL GUN",
+    icon: "grapnel",
+    color: "#9dff00",
+    spec: "Magnetic ascension launcher",
+    detail: "Fires a monofilament line with a 200 kg winch for rapid vertical traversal.",
+  },
+  {
+    id: "smoke",
+    name: "SMOKE PELLET",
+    icon: "smoke",
+    color: "#b388ff",
+    spec: "Instant concealment burst",
+    detail: "Pressurized capsule deploys a dense vision-blocking cloud on impact.",
+  },
+  {
+    id: "gel",
+    name: "EXPLOSIVE GEL",
+    icon: "gel",
+    color: "#ff2a3d",
+    spec: "Shaped breach compound",
+    detail: "Sprayable charge for blowing weakened walls, vents, and reinforced doors.",
+  },
+  {
+    id: "sequencer",
+    name: "CRYPTO SEQUENCER",
+    icon: "sequencer",
+    color: "#00e5ff",
+    spec: "Remote signal decryptor",
+    detail: "Brute-forces encrypted comms and security panels; intercepts radio traffic.",
+  },
+  {
+    id: "launcher",
+    name: "LINE LAUNCHER",
+    icon: "launcher",
+    color: "#ff8c1a",
+    spec: "Horizontal zip-line rig",
+    detail: "Anchors a taut traversal cable between two points for silent crossing.",
+  },
+];

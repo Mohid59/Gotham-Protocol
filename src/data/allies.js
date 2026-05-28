@@ -1,0 +1,82 @@
+// The Bat-Family roster.
+import nightwingImg from "../assets/nightwing.webp";
+import oracleImg from "../assets/oracle.webp";
+import robinImg from "../assets/robin.webp";
+import redRobinImg from "../assets/red-robin.webp";
+import batgirlImg from "../assets/batgirl.webp";
+import alfredImg from "../assets/alfred.webp";
+
+export const ALLIES = [
+  {
+    id: "nightwing",
+    codename: "NIGHTWING",
+    realName: "Dick Grayson",
+    role: "FIELD LEADER",
+    mono: "N",
+    status: "ACTIVE",
+    color: "#00e5ff",
+    bio: "The first Robin, now Gotham's most agile guardian. Leads the family when the Bat goes dark — acrobat, detective, and natural commander.",
+    image: nightwingImg,
+    objectPos: "center 20%",
+  },
+  {
+    id: "oracle",
+    codename: "ORACLE",
+    realName: "Barbara Gordon",
+    role: "INTEL // COMMS",
+    mono: "O",
+    status: "ONLINE",
+    color: "#9dff00",
+    bio: "Eyes on every camera in Gotham. The information backbone of every operation — no door stays locked, no signal stays hidden.",
+    image: oracleImg,
+    objectPos: "center 28%",
+  },
+  {
+    id: "robin",
+    codename: "ROBIN",
+    realName: "Damian Wayne",
+    role: "HEIR APPARENT",
+    mono: "R",
+    status: "FIELD",
+    color: "#ff2a3d",
+    bio: "Born of the League of Assassins, son of the Bat. Lethal, brilliant, and slowly learning that restraint is its own kind of strength.",
+    image: robinImg,
+    objectPos: "center 22%",
+  },
+  {
+    id: "red-robin",
+    codename: "RED ROBIN",
+    realName: "Tim Drake",
+    role: "STRATEGIST",
+    mono: "RR",
+    status: "ACTIVE",
+    color: "#ff8c1a",
+    bio: "The detective who deduced Batman's identity as a child. Always ten moves ahead — the family's sharpest tactical mind.",
+    image: redRobinImg,
+    objectPos: "center 18%",
+  },
+  {
+    id: "batgirl",
+    codename: "BATGIRL",
+    realName: "Cassandra Cain",
+    role: "SILENT COMBAT",
+    mono: "B",
+    status: "ACTIVE",
+    color: "#b388ff",
+    bio: "Raised to read bodies instead of words. The most gifted hand-to-hand combatant in the family — she sees a strike before it's thrown.",
+    image: batgirlImg,
+    objectPos: "center 25%",
+  },
+  {
+    id: "alfred",
+    codename: "ALFRED",
+    realName: "Alfred Pennyworth",
+    role: "HANDLER // MEDIC",
+    mono: "A",
+    status: "STANDING BY",
+    color: "#cfd2da",
+    bio: "Butler, field medic, and conscience. The steady hand that holds the entire mission together — and the only one who can send the Bat to bed.",
+    image: alfredImg,
+    objectPos: "center 18%",
+  },
+];
