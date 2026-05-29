@@ -22,12 +22,13 @@ export default function RoguesGallery() {
 
   const go = (i) => rogues.length && setIndex((i + rogues.length) % rogues.length);
 
-  // ENTRANCE — chips animate transform-only (never opacity) so none can get
-  // stuck invisible if a ScrollTrigger mis-evaluates during image load.
+  // ENTRANCE — runs once the records (and their refs) are actually rendered, so
+  // it never targets null elements while the data query is still loading.
+  // Chips animate transform-only so none can get stuck invisible.
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!rogues.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      if (reduce) return;
       gsap.from(headerRef.current?.children || [], {
         scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
         y: 36, opacity: 0, duration: 0.6, ease: "power3.out", stagger: 0.07,
@@ -35,13 +36,15 @@ export default function RoguesGallery() {
       gsap.from(chipRefs.current.filter(Boolean), {
         x: 24, duration: 0.5, ease: "power3.out", stagger: 0.04,
       });
-      gsap.from([featureImgRef.current, dossierRef.current], {
-        scrollTrigger: { trigger: featureImgRef.current, start: "top 85%" },
-        y: 40, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0.1,
-      });
+      if (featureImgRef.current && dossierRef.current) {
+        gsap.from([featureImgRef.current, dossierRef.current], {
+          scrollTrigger: { trigger: featureImgRef.current, start: "top 85%" },
+          y: 40, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0.1,
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [rogues.length]);
 
   // Keep the active chip scrolled into view inside the horizontal rail.
   useEffect(() => {

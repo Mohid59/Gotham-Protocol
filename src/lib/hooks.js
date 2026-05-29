@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { isSupabaseConfigured } from "./supabase";
-import { fetchRogues, fetchAllies, fetchSuits, fetchVehicles, fetchGadgets, LOCAL } from "./api";
+import { fetchRogues, fetchAllies, fetchSuits, fetchVehicles, fetchGadgets, FETCHERS, LOCAL } from "./api";
 
 const opts = { staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false };
 // With no backend, seed local content as initialData → instant, no loading flash.
@@ -11,3 +11,7 @@ export const useAllies = () => useQuery({ queryKey: ["allies"], queryFn: fetchAl
 export const useSuits = () => useQuery({ queryKey: ["suits"], queryFn: fetchSuits, initialData: initial("suits"), ...opts });
 export const useVehicles = () => useQuery({ queryKey: ["vehicles"], queryFn: fetchVehicles, initialData: initial("vehicles"), ...opts });
 export const useGadgets = () => useQuery({ queryKey: ["gadgets"], queryFn: fetchGadgets, initialData: initial("gadgets"), ...opts });
+
+// Generic — used by the admin CMS to drive any collection by key.
+export const useCollection = (key) =>
+  useQuery({ queryKey: [key], queryFn: FETCHERS[key], initialData: initial(key), ...opts });

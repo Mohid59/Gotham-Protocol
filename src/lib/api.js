@@ -18,12 +18,14 @@ function rgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-// Uploaded imageUrl (admin) wins over the bundled local asset.
+// Uploaded imageUrl (admin) wins over the bundled local asset, for every type.
 const mapRogue = (r) => ({ ...r, image: r.imageUrl || rogueImages[r.id], accentSoft: rgba(r.accent, 0.18), accentRing: rgba(r.accent, 0.6) });
-const mapAlly = (a) => ({ ...a, image: allyImages[a.id] });
-const mapSuit = (s) => ({ ...s, image: suitImages[s.id] });
-const mapVehicle = (v) => ({ ...v, image: vehicleImages[v.id] });
+const mapAlly = (a) => ({ ...a, image: a.imageUrl || allyImages[a.id] });
+const mapSuit = (s) => ({ ...s, image: s.imageUrl || suitImages[s.id] });
+const mapVehicle = (v) => ({ ...v, image: v.imageUrl || vehicleImages[v.id] });
 const mapGadget = (g) => g;
+
+export { rgba };
 
 async function fetchTable(table, local, mapper) {
   if (!isSupabaseConfigured) return local.map(mapper);
@@ -38,6 +40,15 @@ export const fetchAllies = () => fetchTable("allies", ALLIES, mapAlly);
 export const fetchSuits = () => fetchTable("suits", SUITS, mapSuit);
 export const fetchVehicles = () => fetchTable("vehicles", VEHICLES, mapVehicle);
 export const fetchGadgets = () => fetchTable("gadgets", GADGETS, mapGadget);
+
+// collection key -> fetcher, for the generic useCollection hook + admin CMS.
+export const FETCHERS = {
+  rogues: fetchRogues,
+  allies: fetchAllies,
+  suits: fetchSuits,
+  vehicles: fetchVehicles,
+  gadgets: fetchGadgets,
+};
 
 // Pre-mapped local content — used as TanStack Query initialData when there is
 // no backend, so the UI renders instantly with no loading flash.
@@ -70,15 +81,15 @@ export async function fetchTransmissions() {
   return data;
 }
 
-// Store a rogue's raw content blob (strip derived/runtime fields first).
-export async function saveRogue(rogue, sort) {
-  const { image, accentSoft, accentRing, ...content } = rogue; // eslint-disable-line no-unused-vars
-  const { error } = await supabase.from("rogues").upsert({ id: content.id, sort, data: content });
+// Store a record's raw content blob (strip derived/runtime fields first).
+export async function saveRecord(table, record, sort) {
+  const { image, accentSoft, accentRing, ...content } = record; // eslint-disable-line no-unused-vars
+  const { error } = await supabase.from(table).upsert({ id: content.id, sort, data: content });
   if (error) throw new Error(error.message);
 }
 
-export async function deleteRogue(id) {
-  const { error } = await supabase.from("rogues").delete().eq("id", id);
+export async function deleteRecord(table, id) {
+  const { error } = await supabase.from(table).delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
 

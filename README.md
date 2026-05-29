@@ -59,7 +59,18 @@ npm run build
 
 # preview the production build locally
 npm run preview
+
+# unit tests (Vitest)
+npm test
+
+# end-to-end tests (Playwright — uses your installed Chrome)
+npm run test:e2e
 ```
+
+## 🧪 Testing
+
+- **Unit** — [Vitest](https://vitest.dev) covers the data layer: content mapping, accent derivation, offline fallbacks, and the admin form schema (`tests/unit/`).
+- **End-to-end** — [Playwright](https://playwright.dev) smoke-tests the live app (`tests/e2e/`): hero + nav, routing, all 13 rogues rendering and advancing, allies/armory content, and the contact form. Configured to use your installed Chrome (`channel: "chrome"`) — no browser download needed.
 
 ## 📁 Project Structure
 
@@ -117,7 +128,9 @@ auth via **Supabase Auth**, file uploads via **Supabase Storage**.
 3. *(Recommended)* **Authentication → Providers → Email** → turn **off** "Allow new
    users to sign up", so only your account exists.
 4. Visit **`/admin`**, sign in, and you get:
-   - **Rogues CMS** — create / edit / delete villains, upload portraits to Storage.
+   - **Content CMS** — a schema-driven editor to create / edit / delete every
+     collection (rogues, allies, suits, vehicles, gadgets), with image uploads
+     to Storage.
    - **Transmissions** — read messages submitted through the contact form.
 
 All writes go through the authenticated user under Row Level Security; the
