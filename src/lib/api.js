@@ -18,7 +18,8 @@ function rgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-const mapRogue = (r) => ({ ...r, image: rogueImages[r.id], accentSoft: rgba(r.accent, 0.18), accentRing: rgba(r.accent, 0.6) });
+// Uploaded imageUrl (admin) wins over the bundled local asset.
+const mapRogue = (r) => ({ ...r, image: r.imageUrl || rogueImages[r.id], accentSoft: rgba(r.accent, 0.18), accentRing: rgba(r.accent, 0.6) });
 const mapAlly = (a) => ({ ...a, image: allyImages[a.id] });
 const mapSuit = (s) => ({ ...s, image: suitImages[s.id] });
 const mapVehicle = (v) => ({ ...v, image: vehicleImages[v.id] });
@@ -56,4 +57,33 @@ export async function submitTransmission({ codename, channel, message }) {
   const { error } = await supabase.from("transmissions").insert({ codename, channel, message });
   if (error) throw new Error(error.message);
   return { ok: true };
+}
+
+/* ---------- Admin (authenticated) ---------- */
+
+export async function fetchTransmissions() {
+  const { data, error } = await supabase
+    .from("transmissions")
+    .select("id, codename, channel, message, created_at")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Store a rogue's raw content blob (strip derived/runtime fields first).
+export async function saveRogue(rogue, sort) {
+  const { image, accentSoft, accentRing, ...content } = rogue; // eslint-disable-line no-unused-vars
+  const { error } = await supabase.from("rogues").upsert({ id: content.id, sort, data: content });
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteRogue(id) {
+  const { error } = await supabase.from("rogues").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function uploadAsset(file, path) {
+  const { error } = await supabase.storage.from("assets").upload(path, file, { upsert: true, contentType: file.type });
+  if (error) throw new Error(error.message);
+  return supabase.storage.from("assets").getPublicUrl(path).data.publicUrl;
 }

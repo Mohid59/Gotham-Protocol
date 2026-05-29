@@ -16,6 +16,7 @@ import RoguesPage from "./pages/RoguesPage";
 import Allies from "./pages/Allies";
 import ArmoryPage from "./pages/ArmoryPage";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -84,6 +85,7 @@ export default function App() {
           <Route path="/allies" element={<Allies />} />
           <Route path="/armory" element={<ArmoryPage />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </AnimatePresence>

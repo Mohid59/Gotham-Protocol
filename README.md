@@ -103,6 +103,26 @@ the app runs perfectly even with no backend configured.
 
 **How it works:** [`src/lib/api.js`](src/lib/api.js) fetches each collection from Supabase when `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` are present, and falls back to [`src/data/`](src/data/) otherwise. Data is fetched via **TanStack Query**; images stay as optimized local assets attached by id. RLS makes content world-readable while keeping submitted transmissions private (insert-only).
 
+## 🔐 Admin Dashboard (`/admin`)
+
+An authenticated command deck to manage content and read contact submissions —
+auth via **Supabase Auth**, file uploads via **Supabase Storage**.
+
+**Enable it (after the Supabase setup above):**
+
+1. Run [`supabase/phase2.sql`](supabase/phase2.sql) in the SQL Editor — adds write
+   policies for authenticated users, lets admins read transmissions, and creates
+   a public `assets` storage bucket (with policies).
+2. **Authentication → Users → Add user** to create your admin account.
+3. *(Recommended)* **Authentication → Providers → Email** → turn **off** "Allow new
+   users to sign up", so only your account exists.
+4. Visit **`/admin`**, sign in, and you get:
+   - **Rogues CMS** — create / edit / delete villains, upload portraits to Storage.
+   - **Transmissions** — read messages submitted through the contact form.
+
+All writes go through the authenticated user under Row Level Security; the
+`service_role` key is **never** shipped to the client.
+
 ## 🌐 Deployment
 
 The repo ships with a **GitHub Actions → Pages** workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
